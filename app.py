@@ -28,9 +28,9 @@ app = create_app()
 
 #app = FastAPI()  # FastAPI auto‑generates /docs for you
 
-@app.get("/books")
-def list_books():
-    return [{"id": 1, "title": "Dune"}]
+# @app.get("/books")
+# def list_books():
+#     return [{"id": 1, "title": "Dune"}]
 
 if __name__ == "__main__":
     # On startup, create tables if they don’t exist yet

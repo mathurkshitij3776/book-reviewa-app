@@ -109,33 +109,40 @@ class BookListAPI(Resource):
         
 
 
-class BookDetailAPI(Resource):
+# class BookDetailAPI(Resource):
    
-    def put(self, id):
-        book = Book.query.get(id)
-        if not book:
-            return {"message": "Book not found"}, 404
-        book.title = request.json.get("title", book.title)
-        book.author = request.json.get("author", book.author)
-        db.session.commit()
-        return {"message": "Book updated successfully"}, 200
+#     def put(self, id):
+#         book = Book.query.get(id)
+#         if not book:
+#             return {"message": "Book not found"}, 404
+#         book.title = request.json.get("title", book.title)
+#         book.author = request.json.get("author", book.author)
+#         db.session.commit()
+#         return {"message": "Book updated successfully"}, 200
 
-    def delete(self, id):
-        book = Book.query.get(id)
-        if not book:
-            return {"message": "Book not found"}, 404
-        db.session.delete(book)
-        db.session.commit()
-        return {"message": "Book deleted successfully"}, 200
+#     def delete(self, id):
+#         book = Book.query.get(id)
+#         if not book:
+#             return {"message": "Book not found"}, 404
+#         db.session.delete(book)
+#         db.session.commit()
+#         return {"message": "Book deleted successfully"}, 200
 
 class ReviewListAPI(Resource):
     def get(self, id):
-        book = Book.query.get_or_404(id)
-        return [
-            {"id": r.id, "text": r.text}
-            for r in book.reviews
-        ], 200
-
+        book = Book.query.filter_by(id = id).first()
+        if book:    
+            reviews = book.reviews
+            if reviews:
+                return [
+                    {"id": r.id, "text": r.text}
+                    for r in reviews
+                ], 200
+            else:
+                return {"message": "no reviews"}
+        return {"message": "book not found "}   
+    
+    
     def post(self, id):
         book = Book.query.get_or_404(id)
         data = request.get_json()
@@ -147,7 +154,7 @@ class ReviewListAPI(Resource):
     
 # Register resources
 api.add_resource(BookListAPI,    "/books")
-api.add_resource(BookDetailAPI,  "/books/<int:id>")
+# api.add_resource(BookDetailAPI,  "/books/<int:id>")
 api.add_resource(ReviewListAPI,  "/books/<int:id>/reviews")
 
 # api.add_resource(BookListAPI, "/books")  # GET & POST
