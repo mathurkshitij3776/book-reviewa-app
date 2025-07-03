@@ -25,5 +25,3 @@ def test_add_review(client):
     response = client.post(f"/books/{book_id}/reviews", json={"text": "Nice one!"})
     assert response.status_code == 201
     assert response.get_json()["text"] == "Nice one!"
-
-    
