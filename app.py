@@ -4,34 +4,35 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from database import db
 from flask_migrate import Migrate
-from api import *
+from api import api
 from config import *
+from flasgger import swag_from
+#from flask_graphql import GraphQL
+#from schema import schema
+
 #from fastapi import FastAPI
 migrate = Migrate() 
 app = None
 def create_app():
     app = Flask(__name__)
-    # load configuration
-    # app.config.from_object(config_class)
-# Use SQLite, which will create a file named 'book_review.db'
+    app.config['SWAGGER'] = {
+        'title': 'Book Review API',
+        'uiversion': 3,
+        'description': 'A REST API for managing books and reviews',
+        'version': '1.0.0'
+    }
+    
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///book_reviewdb.sqlite3'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    #app.config.from_object("app.config.Config")
-    migrate.init_app(app, db) 
-    # initialize database extension
-    #app.app_context.push()
     db.init_app(app)
     api.init_app(app)
 
+    
+    migrate.init_app(app, db) 
+  
     return app
 
 app = create_app()
-
-#app = FastAPI()  # FastAPI auto‑generates /docs for you
-
-# @app.get("/books")
-# def list_books():
-#     return [{"id": 1, "title": "Dune"}]
 
 if __name__ == "__main__":
     # On startup, create tables if they don’t exist yet
